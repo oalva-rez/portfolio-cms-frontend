@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 function Register() {
   const [inputData, setInputData] = useState({
     siteName: "",
@@ -27,23 +27,24 @@ function Register() {
 
     if (regularExpression.test(inputData.password) === true) {
       if (inputData.password === inputData.confirmPassword) {
-        const response = await fetch("http://localhost:3001/api/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            siteName: inputData.siteName,
-            username: inputData.username,
-            password: inputData.password,
-            email: inputData.email.toLowerCase(),
-          }),
-        });
-        const data = await response.json();
-        console.log(data);
-        if ((data.status = "success")) {
-          console.log("user registered");
+        try {
+          const response = await fetch("http://localhost:3001/api/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              siteName: inputData.siteName,
+              username: inputData.username,
+              password: inputData.password,
+              email: inputData.email.toLowerCase(),
+            }),
+          });
+          const data = await response.json();
+          console.log(data);
           navigate("/login");
+        } catch (error) {
+          console.log(error);
         }
       } else {
         alert("passwords do not match");
@@ -109,6 +110,7 @@ function Register() {
         />
         <input type="submit" value="Register" />
       </form>
+      <Link to="/login">Login</Link>
     </div>
   );
 }

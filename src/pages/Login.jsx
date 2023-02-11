@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Login() {
   const [inputData, setInputData] = useState({
@@ -64,6 +64,7 @@ function Login() {
         {error ? <p>{error}</p> : null}
         <input type="submit" value="Login" />
       </form>
+      <Link to="/register">Register</Link>
     </div>
   );
 }

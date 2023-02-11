@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
+import MainContent from "../components/MainContent";
 
 function Dashboard() {
-  const [user, setUser] = useState({});
   const navigate = useNavigate();
   const [inputData, setInputData] = useState({
     siteName: "",
   });
-  const [siteName, setSiteName] = useState("");
+  const [userData, setUserData] = useState({});
   function handleChange(event) {
     const { name, value } = event.target;
     setInputData((prevInputData) => {
@@ -29,8 +30,9 @@ function Dashboard() {
 
     // db data
     const response = await data.json();
-    console.log(response);
-    setSiteName(response.user.siteName);
+
+    setUserData(response.user);
+    console.log(response.user);
   }
 
   function addToDB() {
@@ -67,18 +69,13 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <p>Update Site name:</p>
-      <p>Current Site Name: {siteName}</p>
-      <input
-        type="text"
-        onChange={(evt) => {
-          handleChange(evt);
-        }}
-        name="siteName"
-      />
-      <button onClick={addToDB}>Add to DB</button>
-      <button onClick={signOut}>Sign Out</button>
+    <div className="main">
+      <div className="sidebar">
+        <Sidebar userData={userData} />
+      </div>
+      <div className="main-content">
+        <MainContent userData={userData} />
+      </div>
     </div>
   );
 }
