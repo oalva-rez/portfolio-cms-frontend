@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../apiLibrary";
 
 function Login() {
   const [inputData, setInputData] = useState({
-    emailOrUsername: "",
+    usernameOrEmail: "",
     password: "",
   });
   const [error, setError] = useState(null);
@@ -19,17 +20,7 @@ function Login() {
   }
   async function handleSubmit(event) {
     event.preventDefault();
-    const response = await fetch("http://localhost:3001/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        usernameOrEmail: inputData.emailOrUsername,
-        password: inputData.password,
-      }),
-    });
-    const data = await response.json();
+    const data = await api.login(inputData);
     if (data.user) {
       console.log(data);
       localStorage.setItem("token", data.token);
@@ -46,7 +37,7 @@ function Login() {
         <input
           type="text"
           placeholder="email or username"
-          name="emailOrUsername"
+          name="usernameOrEmail"
           onChange={(evt) => {
             handleChange(evt);
           }}

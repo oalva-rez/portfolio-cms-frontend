@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import MyProjects from "../modules/MyProjects";
 import MyBlog from "../modules/MyBlog";
 import CreateBlog from "../modules/CreateBlog";

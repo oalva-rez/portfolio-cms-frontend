@@ -1,21 +1,22 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import techIcons from "../techIcons.json";
 
-function CreateProject() {
+function CreateProject({ userData }) {
   const [inputData, setInputData] = useState({
     title: "",
-    desc: "",
-    ghUrl: "",
-    projUrl: "",
+    description: "",
+    githubUrl: "",
+    liveUrl: "",
     techQuery: "",
   });
   const [techSelect, setTechSelect] = useState([]);
   const inputRef = useRef(null);
+  const fileRef = useRef(null);
   const [isHoverOnTech, setIsHoverOnTech] = useState({
     isHover: false,
     id: null,
   });
-
+  const [newProjectData, setNewProjectData] = useState({});
   function handleChange(e) {
     const { name, value } = e.target;
     setInputData((prevInputData) => {
@@ -46,7 +47,45 @@ function CreateProject() {
       return prevTechSelect.filter((tech) => tech.id !== id);
     });
   }
-  console.log(techSelect);
+  console.log(userData);
+  function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData();
+
+    formData.append("title", inputData.title);
+    formData.append("description", inputData.description);
+    formData.append("githubUrl", inputData.githubUrl);
+    formData.append("liveUrl", inputData.liveUrl);
+    formData.append("projImage", fileRef.current.files[0]);
+    formData.append("techSelect", JSON.stringify(techSelect));
+    setNewProjectData(formData);
+    fetch("http://localhost:3001/upload", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
+  async function populateData() {
+    const data = await fetch("http://localhost:3001/api/dashboard", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    // db data
+    const response = await data.json();
+    console.log(response);
+  }
+  useEffect(() => {
+    populateData();
+  }, []);
+
   return (
     <>
       <h1 className="module-header">Create Project</h1>
@@ -65,7 +104,7 @@ function CreateProject() {
           <div className="input-container">
             <label htmlFor="projectDesc">Project Description:</label>
             <textarea
-              name="desc"
+              name="description"
               id="projectDesc"
               onChange={handleChange}
               rows={20}
@@ -74,30 +113,20 @@ function CreateProject() {
 
           <div className="input-container">
             <label htmlFor="projectGHLink">Github Repo URL:</label>
-            <input
-              type="text"
-              name="ghUrl"
-              id="projectGHLink"
-              onChange={handleChange}
-            />
+            <input type="text" name="githubUrl" onChange={handleChange} />
           </div>
 
           <div className="input-container">
-            <label htmlFor="projectURL">Project URL:</label>
-            <input
-              type="text"
-              name="projUrl"
-              id="projectURL"
-              onChange={handleChange}
-            />
+            <label htmlFor="liveURL">Project URL:</label>
+            <input type="text" name="liveUrl" onChange={handleChange} />
           </div>
           <div className="input-container">
             <label htmlFor="projectImg">Project Image:</label>
             <input
               type="file"
-              name="img"
-              id="projectImg"
+              name="projImage"
               accept="image/png, image/jpeg, image/jpg"
+              ref={fileRef}
             />
           </div>
 
@@ -138,11 +167,11 @@ function CreateProject() {
               </ul>
             </div>
             <div className="chosen-tech">
-              {techSelect.map((tech) => {
+              {techSelect.map((tech, index) => {
                 return (
                   <div
                     className="tech-icon"
-                    key={tech.id}
+                    key={tech.id + index}
                     onMouseEnter={() => {
                       setIsHoverOnTech({
                         isHover: true,
@@ -177,7 +206,7 @@ function CreateProject() {
               })}
             </div>
           </div>
-          <button>Add Project</button>
+          <button onClick={handleSubmit}>Add Project</button>
         </div>
       </div>
     </>

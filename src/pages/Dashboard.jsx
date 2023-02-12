@@ -3,57 +3,23 @@ import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import MainContent from "../components/MainContent";
+import api from "../apiLibrary";
 
 function Dashboard() {
-  const navigate = useNavigate();
-  const [inputData, setInputData] = useState({
-    siteName: "",
-  });
   const [userData, setUserData] = useState({});
-  function handleChange(event) {
-    const { name, value } = event.target;
-    setInputData((prevInputData) => {
-      return {
-        ...prevInputData,
-        [name]: value,
-      };
-    });
-  }
-  async function populateData() {
-    const data = await fetch("http://localhost:3001/api/dashboard", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+  const navigate = useNavigate();
 
-    // db data
-    const response = await data.json();
-
+  async function populateUserData() {
+    const response = await api.verify(localStorage.getItem("token"));
     setUserData(response.user);
-    console.log(response.user);
   }
 
-  function addToDB() {
-    fetch("http://localhost:3001/api/dashboard", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({
-        //  Data you want to add to the database
-        siteName: inputData.siteName,
-      }),
-    });
-  }
   function signOut() {
     localStorage.removeItem("token");
     navigate("/login");
   }
   useEffect(() => {
-    console.log("useEffect ran");
+    console.log("useEffect");
     const token = localStorage.getItem("token");
     if (token) {
       const user = jwt_decode(token);
@@ -61,7 +27,7 @@ function Dashboard() {
         localStorage.removeItem("token");
         navigate("/login");
       } else {
-        populateData();
+        populateUserData();
       }
     } else {
       navigate("/login");

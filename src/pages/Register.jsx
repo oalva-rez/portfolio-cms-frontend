@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import api from "../apiLibrary";
+
 function Register() {
   const [inputData, setInputData] = useState({
     siteName: "",
@@ -28,21 +30,10 @@ function Register() {
     if (regularExpression.test(inputData.password) === true) {
       if (inputData.password === inputData.confirmPassword) {
         try {
-          const response = await fetch("http://localhost:3001/api/register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              siteName: inputData.siteName,
-              username: inputData.username,
-              password: inputData.password,
-              email: inputData.email.toLowerCase(),
-            }),
-          });
-          const data = await response.json();
-          console.log(data);
-          navigate("/login");
+          const data = await api.register(inputData);
+          if (!data.error) {
+            navigate("/login");
+          }
         } catch (error) {
           console.log(error);
         }
