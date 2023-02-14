@@ -47,7 +47,6 @@ function CreateProject({ userData }) {
       return prevTechSelect.filter((tech) => tech.id !== id);
     });
   }
-  console.log(userData);
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData();
@@ -69,22 +68,6 @@ function CreateProject({ userData }) {
       .then((res) => res.json())
       .then((data) => console.log(data));
   }
-  async function populateData() {
-    const data = await fetch("http://localhost:3001/api/dashboard", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
-
-    // db data
-    const response = await data.json();
-    console.log(response);
-  }
-  useEffect(() => {
-    populateData();
-  }, []);
 
   return (
     <>
