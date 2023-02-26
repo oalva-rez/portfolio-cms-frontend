@@ -19,17 +19,19 @@ function Dashboard() {
     navigate("/login");
   }
   useEffect(() => {
-    console.log("useEffect");
     const token = localStorage.getItem("token");
     if (token) {
       const user = jwt_decode(token);
       if (!user) {
         localStorage.removeItem("token");
+        console.log("no user found");
+
         navigate("/login");
       } else {
         populateUserData();
       }
     } else {
+      console.log("no token found");
       navigate("/login");
     }
   }, []);
@@ -40,7 +42,7 @@ function Dashboard() {
         <Sidebar userData={userData} />
       </div>
       <div className="main-content">
-        <MainContent userData={userData} />
+        <MainContent />
       </div>
     </div>
   );

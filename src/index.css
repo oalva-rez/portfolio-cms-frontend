@@ -13,7 +13,10 @@
 }
 .main-content {
   background-color: #f5f5f5;
+  max-height: 100vh;
+  overflow-y: scroll;
 }
+.module-content
 /* SIDEBAR */
 .sidebar {
   display: grid;
@@ -24,6 +27,8 @@
 .sidebar h1 {
   justify-self: center;
   align-self: end;
+  text-align: center;
+  margin-top: 20px;
 }
 .sidebar--content {
   display: grid;
@@ -63,8 +68,7 @@
 }
 
 /* MAIN/MODULE CONTENT */
-.main-content {
-}
+
 .module-header {
   text-align: center;
   padding: 20px 0;
@@ -72,7 +76,6 @@
 }
 .module-content {
   width: 80%;
-  height: 80%;
   margin: 0 auto;
 }
 
@@ -186,7 +189,37 @@ textarea,
   font-weight: lighter;
   cursor: pointer;
   margin: 20px auto;
+  position: relative;
 }
 .project-input-container button:hover {
   background-color: #2c2c2c;
+}
+
+/* PROJECTS */
+.project-container {
+  display: grid;
+}
+.project--card {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 30px;
+  padding: 20px;
+  background-color: rgba(119, 136, 153, 0.13);
+}
+
+.project--image img {
+  width: 200px;
+  height: 200px;
+  background-color: #d9d9d9;
+  margin-bottom: 10px;
+  box-shadow: #2c2c2c44 0px 0px 10px;
+}
+.project--tech > * {
+  width: 60px;
+  height: 100%;
+}
+.project--links {
+  display: flex;
+  gap: 30px;
 }

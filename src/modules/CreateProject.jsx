@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import techIcons from "../techIcons.json";
+import { ToastContainer, toast } from "react-toastify";
 
-function CreateProject({ userData }) {
+function CreateProject() {
   const [inputData, setInputData] = useState({
     title: "",
     description: "",
@@ -12,11 +13,12 @@ function CreateProject({ userData }) {
   const [techSelect, setTechSelect] = useState([]);
   const inputRef = useRef(null);
   const fileRef = useRef(null);
+  const firstInputRef = useRef(null);
   const [isHoverOnTech, setIsHoverOnTech] = useState({
     isHover: false,
     id: null,
   });
-  const [newProjectData, setNewProjectData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   function handleChange(e) {
     const { name, value } = e.target;
     setInputData((prevInputData) => {
@@ -25,6 +27,38 @@ function CreateProject({ userData }) {
         [name]: value,
       };
     });
+  }
+  useEffect(() => {
+    firstInputRef.current.focus();
+  }, []);
+
+  function validateInput() {
+    console.log(inputData);
+    if (inputData.title === "") {
+      toast.error("Please enter a title");
+      return false;
+    }
+    if (inputData.description === "") {
+      toast.error("Please enter a description");
+      return false;
+    }
+    if (inputData.githubUrl === "") {
+      toast.error("Please enter a github url");
+      return false;
+    }
+    if (inputData.liveUrl === "") {
+      toast.error("Please enter a live url");
+      return false;
+    }
+    if (techSelect.length === 0) {
+      toast.error("Please select at least one tech stack");
+      return false;
+    }
+    if (fileRef.current.files.length === 0) {
+      toast.error("Please select a project image");
+      return false;
+    }
+    return true;
   }
   function handleTechSelect(techName) {
     setTechSelect((prevTechSelect) => {
@@ -47,26 +81,64 @@ function CreateProject({ userData }) {
       return prevTechSelect.filter((tech) => tech.id !== id);
     });
   }
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
+    //do something else
     e.preventDefault();
-    const formData = new FormData();
+    if (validateInput()) {
+      setIsLoading(true);
+      const id = toast.info("rendering");
+      toast.update(id, {
+        render: "Adding New Project...",
+        type: "info",
+        autoClose: false,
+        isLoading: true,
+      });
+      const formData = new FormData();
+      formData.append("title", inputData.title);
+      formData.append("description", inputData.description);
+      formData.append("githubUrl", inputData.githubUrl);
+      formData.append("liveUrl", inputData.liveUrl);
+      formData.append("projImage", fileRef.current.files[0]);
+      formData.append("techSelect", JSON.stringify(techSelect));
 
-    formData.append("title", inputData.title);
-    formData.append("description", inputData.description);
-    formData.append("githubUrl", inputData.githubUrl);
-    formData.append("liveUrl", inputData.liveUrl);
-    formData.append("projImage", fileRef.current.files[0]);
-    formData.append("techSelect", JSON.stringify(techSelect));
-    setNewProjectData(formData);
-    fetch("http://localhost:3001/upload", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+      fetch("http://localhost:3001/api/dashboard/my-projects/create", {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.error) {
+            // on error
+            toast.update(id, {
+              render: "Couldn't create project. Please try again later.",
+              type: "error",
+              isLoading: false,
+            });
+            setIsLoading(false);
+          } else {
+            // on success
+            toast.update(id, {
+              render: "Project created successfully!",
+              type: "success",
+              isLoading: false,
+              autoClose: 2000,
+            });
+            setIsLoading(false);
+            setInputData({
+              title: "",
+              description: "",
+              githubUrl: "",
+              liveUrl: "",
+              techQuery: "",
+            });
+            setTechSelect([]);
+            firstInputRef.current.focus();
+          }
+        });
+    }
   }
 
   return (
@@ -81,6 +153,9 @@ function CreateProject({ userData }) {
               name="title"
               id="projectName"
               onChange={handleChange}
+              ref={firstInputRef}
+              required
+              value={inputData.title}
             />
           </div>
 
@@ -91,25 +166,40 @@ function CreateProject({ userData }) {
               id="projectDesc"
               onChange={handleChange}
               rows={20}
+              required
+              value={inputData.description}
             />
           </div>
 
           <div className="input-container">
             <label htmlFor="projectGHLink">Github Repo URL:</label>
-            <input type="text" name="githubUrl" onChange={handleChange} />
+            <input
+              type="text"
+              name="githubUrl"
+              onChange={handleChange}
+              required
+              value={inputData.githubUrl}
+            />
           </div>
 
           <div className="input-container">
             <label htmlFor="liveURL">Project URL:</label>
-            <input type="text" name="liveUrl" onChange={handleChange} />
+            <input
+              type="text"
+              name="liveUrl"
+              onChange={handleChange}
+              required
+              value={inputData.liveUrl}
+            />
           </div>
           <div className="input-container">
             <label htmlFor="projectImg">Project Image:</label>
             <input
               type="file"
-              name="projImage"
-              accept="image/png, image/jpeg, image/jpg"
+              name="imageFile"
+              accept="image/png, image/jpeg, image/jpg image/webp"
               ref={fileRef}
+              required
             />
           </div>
 
@@ -125,6 +215,7 @@ function CreateProject({ userData }) {
                 onChange={handleChange}
                 name="techQuery"
                 ref={inputRef}
+                value={inputData.techQuery}
               />
               <ul className="search-list">
                 {techIcons
@@ -189,9 +280,20 @@ function CreateProject({ userData }) {
               })}
             </div>
           </div>
-          <button onClick={handleSubmit}>Add Project</button>
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading ? true : false}
+            style={isLoading ? { opacity: ".2", cursor: "not-allowed" } : null}
+          >
+            Add Project
+          </button>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        hideProgressBar={true}
+        theme="dark"
+      />
     </>
   );
 }
