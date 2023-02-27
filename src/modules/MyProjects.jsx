@@ -1,27 +1,62 @@
 import React, { useState, useEffect } from "react";
 import techIcons from "../techIcons.json";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import api from "../apiLibrary";
 
 function myProjects() {
   const [projects, setProjects] = useState([]);
+  const [isHoverOnCard, setIsHoverOnCard] = useState({
+    isHover: false,
+    id: null,
+  });
+  const navigate = useNavigate();
   useEffect(() => {
     async function getProjects() {
-      const response = await fetch(
-        "http://localhost:3001/api/dashboard/my-projects",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = await response.json();
-
+      const data = await api.getProjects(localStorage.getItem("token"));
       setProjects(data.projects);
     }
     getProjects();
   }, []);
 
+  function handleProjectEdit(projId) {
+    navigate(`/dashboard/my-projects/edit/${projId}`);
+  }
+  function handleProjectDelete(projId) {
+    async function deleteProject() {
+      const id = toast.info("rendering");
+      toast.update(id, {
+        render: "Deleting project...",
+        type: "info",
+        autoClose: false,
+        isLoading: true,
+      });
+      const data = await api.deleteProject(
+        projId,
+        localStorage.getItem("token")
+      );
+      if (data.status === "success") {
+        toast.update(id, {
+          render: "Project deleted successfully",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        const newProjects = projects.filter(
+          (proj) => proj.projectId !== projId
+        );
+        setProjects(newProjects);
+      } else {
+        toast.update(id, {
+          render: "Failed to delete project. Try again later.",
+          type: "error",
+          isLoading: false,
+          autoClose: 2000,
+        });
+      }
+    }
+    deleteProject();
+  }
   return (
     <>
       <h1 className="module-header">My Projects</h1>
@@ -35,7 +70,16 @@ function myProjects() {
           <div className="project-container">
             {projects.map((proj) => {
               return (
-                <div className="project--card" key={proj.projectId}>
+                <div
+                  className="project--card"
+                  key={proj.projectId}
+                  onMouseEnter={() =>
+                    setIsHoverOnCard({ isHover: true, id: proj.projectId })
+                  }
+                  onMouseLeave={() =>
+                    setIsHoverOnCard({ isHover: false, id: null })
+                  }
+                >
                   <div className="project--image">
                     <img src={proj.imageUrl} alt={proj.title + " screenshot"} />
                   </div>
@@ -57,17 +101,39 @@ function myProjects() {
                       })}
                       <div className="project--links">
                         <div className="project--gh">
-                          <p>
-                            GitHub Link:{" "}
-                            <a href={proj.githubUrl}>{proj.githubUrl}</a>
-                          </p>
+                          <i className="fa-brands fa-github"></i>
+                          <a href={proj.githubUrl}>{proj.githubUrl}</a>
                         </div>
                         <div className="project--live">
-                          <p>
-                            Live Link: <a href={proj.liveUrl}>{proj.liveUrl}</a>
-                          </p>
+                          <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                          <a href={proj.liveUrl}>{proj.liveUrl}</a>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div
+                    className={
+                      isHoverOnCard.isHover &&
+                      isHoverOnCard.id === proj.projectId
+                        ? "project--menu"
+                        : "project--menu hide-menu"
+                    }
+                  >
+                    <div
+                      onClick={() => {
+                        handleProjectEdit(proj.projectId);
+                      }}
+                    >
+                      Edit
+                    </div>
+                    <span>|</span>
+                    <div
+                      className="project--delete"
+                      onClick={() => {
+                        handleProjectDelete(proj.projectId);
+                      }}
+                    >
+                      Delete
                     </div>
                   </div>
                 </div>
@@ -76,6 +142,11 @@ function myProjects() {
           </div>
         )}
       </div>
+      <ToastContainer
+        position="top-right"
+        hideProgressBar={true}
+        theme="dark"
+      />
     </>
   );
 }

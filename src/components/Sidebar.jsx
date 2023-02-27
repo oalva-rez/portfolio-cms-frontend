@@ -1,9 +1,12 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 function Sidebar({ userData }) {
   const { siteName } = userData;
   const Navigate = useNavigate();
+  const location = useLocation();
+  const path = location.pathname.split("/").slice(-2).join("/");
+
   return (
     <>
       <h1>Portfolio CMS</h1>
@@ -17,17 +20,30 @@ function Sidebar({ userData }) {
           </span>
         </h2>
         <ul>
-          <li onClick={() => Navigate("/dashboard/my-projects")}>
+          <li
+            onClick={() => Navigate("/dashboard/my-projects")}
+            className={path === "dashboard/my-projects" ? "selected" : null}
+          >
             My Projects
           </li>
-          <li onClick={() => Navigate("/dashboard/my-blog")}>My Blog</li>
+          <li
+            onClick={() => Navigate("/dashboard/my-blog")}
+            className={path === "dashboard/my-blog" ? "selected" : null}
+          >
+            My Blog
+          </li>
         </ul>
-        <div className="hr"></div>
         <ul>
-          <li onClick={() => Navigate("/dashboard/my-projects/create")}>
+          <li
+            onClick={() => Navigate("/dashboard/my-projects/create")}
+            className={path === "my-projects/create" ? "selected" : null}
+          >
             Add New Project
           </li>
-          <li onClick={() => Navigate("/dashboard/my-blog/create")}>
+          <li
+            onClick={() => Navigate("/dashboard/my-blog/create")}
+            className={path === "my-blog/create" ? "selected" : null}
+          >
             Add New Blog Post
           </li>
         </ul>

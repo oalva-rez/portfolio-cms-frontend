@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import techIcons from "../techIcons.json";
 import { ToastContainer, toast } from "react-toastify";
+import api from "../apiLibrary";
 
-function CreateProject() {
+function CreateEditProject({ isEdit }) {
   const [inputData, setInputData] = useState({
     title: "",
     description: "",
@@ -19,6 +20,7 @@ function CreateProject() {
     id: null,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditProjectName, setIsEditProjectName] = useState("");
   function handleChange(e) {
     const { name, value } = e.target;
     setInputData((prevInputData) => {
@@ -28,12 +30,39 @@ function CreateProject() {
       };
     });
   }
-  useEffect(() => {
-    firstInputRef.current.focus();
-  }, []);
 
+  useEffect(() => {
+    setInputData({
+      title: "",
+      description: "",
+      githubUrl: "",
+      liveUrl: "",
+      techQuery: "",
+    });
+    setTechSelect([]);
+    firstInputRef.current.focus();
+    if (isEdit) {
+      async function getProject() {
+        const data = await api.getProject(
+          window.location.pathname.split("/")[4],
+          localStorage.getItem("token")
+        );
+        setInputData((prevInputData) => {
+          return {
+            title: data.project.title,
+            description: data.project.description,
+            githubUrl: data.project.githubUrl,
+            liveUrl: data.project.liveUrl,
+            techQuery: "",
+          };
+        });
+        setTechSelect(JSON.parse(data.project.techSelect));
+        setIsEditProjectName(data.project.title);
+      }
+      getProject();
+    }
+  }, [isEdit]);
   function validateInput() {
-    console.log(inputData);
     if (inputData.title === "") {
       toast.error("Please enter a title");
       return false;
@@ -54,7 +83,9 @@ function CreateProject() {
       toast.error("Please select at least one tech stack");
       return false;
     }
-    if (fileRef.current.files.length === 0) {
+
+    //file input is not required for edit
+    if (!isEdit && fileRef.current.files.length === 0) {
       toast.error("Please select a project image");
       return false;
     }
@@ -84,11 +115,15 @@ function CreateProject() {
   async function handleSubmit(e) {
     //do something else
     e.preventDefault();
+    const loadingToast = isEdit
+      ? "Updating Project..."
+      : "Adding New Project...";
+
     if (validateInput()) {
       setIsLoading(true);
       const id = toast.info("rendering");
       toast.update(id, {
-        render: "Adding New Project...",
+        render: loadingToast,
         type: "info",
         autoClose: false,
         isLoading: true,
@@ -101,49 +136,58 @@ function CreateProject() {
       formData.append("projImage", fileRef.current.files[0]);
       formData.append("techSelect", JSON.stringify(techSelect));
 
-      fetch("http://localhost:3001/api/dashboard/my-projects/create", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            // on error
-            toast.update(id, {
-              render: "Couldn't create project. Please try again later.",
-              type: "error",
-              isLoading: false,
-            });
-            setIsLoading(false);
-          } else {
-            // on success
-            toast.update(id, {
-              render: "Project created successfully!",
-              type: "success",
-              isLoading: false,
-              autoClose: 2000,
-            });
-            setIsLoading(false);
-            setInputData({
-              title: "",
-              description: "",
-              githubUrl: "",
-              liveUrl: "",
-              techQuery: "",
-            });
-            setTechSelect([]);
-            firstInputRef.current.focus();
-          }
+      let data;
+      const projectId = window.location.pathname.split("/")[4];
+      if (isEdit) {
+        data = await api.updateProject(
+          projectId,
+          formData,
+          localStorage.getItem("token")
+        );
+      } else {
+        data = await api.createProject(formData, localStorage.getItem("token"));
+      }
+      const errorToast = isEdit
+        ? "Couldn't update project"
+        : "Couldn't create project";
+      const successToast = isEdit
+        ? "Project updated successfully!"
+        : "Project created successfully!";
+      if (data.error) {
+        // on error
+        toast.update(id, {
+          render: errorToast,
+          type: "error",
+          isLoading: false,
         });
+        setIsLoading(false);
+      } else {
+        // on success
+        toast.update(id, {
+          render: successToast,
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
+        setIsLoading(false);
+        !isEdit &&
+          setInputData({
+            title: "",
+            description: "",
+            githubUrl: "",
+            liveUrl: "",
+            techQuery: "",
+          });
+        !isEdit && setTechSelect([]);
+        firstInputRef.current.focus();
+      }
     }
   }
-
   return (
     <>
-      <h1 className="module-header">Create Project</h1>
+      <h1 className="module-header">
+        {isEdit ? `Editing - ${isEditProjectName}` : "Create New Project"}
+      </h1>
       <div className="module-content">
         <div className="project-input-container">
           <div className="input-container">
@@ -165,7 +209,7 @@ function CreateProject() {
               name="description"
               id="projectDesc"
               onChange={handleChange}
-              rows={20}
+              rows={30}
               required
               value={inputData.description}
             />
@@ -285,7 +329,7 @@ function CreateProject() {
             disabled={isLoading ? true : false}
             style={isLoading ? { opacity: ".2", cursor: "not-allowed" } : null}
           >
-            Add Project
+            {isEdit ? "Update Project" : "Add Project"}
           </button>
         </div>
       </div>
@@ -298,4 +342,4 @@ function CreateProject() {
   );
 }
 
-export default CreateProject;
+export default CreateEditProject;
