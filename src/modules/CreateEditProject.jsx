@@ -32,6 +32,7 @@ function CreateEditProject({ isEdit }) {
   }
 
   useEffect(() => {
+    // clear inputs on render
     setInputData({
       title: "",
       description: "",
@@ -40,10 +41,14 @@ function CreateEditProject({ isEdit }) {
       techQuery: "",
     });
     setTechSelect([]);
+
+    // focus on first input
     firstInputRef.current.focus();
+
+    // get project data if edit mode
     if (isEdit) {
       async function getProject() {
-        const data = await api.getProject(
+        const data = await api.getProjectById(
           window.location.pathname.split("/")[4],
           localStorage.getItem("token")
         );
@@ -62,7 +67,8 @@ function CreateEditProject({ isEdit }) {
       getProject();
     }
   }, [isEdit]);
-  function validateInput() {
+
+  function isInputValid() {
     if (inputData.title === "") {
       toast.error("Please enter a title");
       return false;
@@ -83,7 +89,6 @@ function CreateEditProject({ isEdit }) {
       toast.error("Please select at least one tech stack");
       return false;
     }
-
     //file input is not required for edit
     if (!isEdit && fileRef.current.files.length === 0) {
       toast.error("Please select a project image");
@@ -98,6 +103,7 @@ function CreateEditProject({ isEdit }) {
         techIcons.find((tech) => tech.tech_name === techName),
       ];
     });
+    // clear query on select
     setInputData((prevInputData) => {
       return {
         ...prevInputData,
@@ -113,15 +119,14 @@ function CreateEditProject({ isEdit }) {
     });
   }
   async function handleSubmit(e) {
-    //do something else
     e.preventDefault();
     const loadingToast = isEdit
       ? "Updating Project..."
       : "Adding New Project...";
 
-    if (validateInput()) {
+    if (isInputValid()) {
       setIsLoading(true);
-      const id = toast.info("rendering");
+      const id = toast.info("rendering"); // init toast
       toast.update(id, {
         render: loadingToast,
         type: "info",
@@ -135,11 +140,11 @@ function CreateEditProject({ isEdit }) {
       formData.append("liveUrl", inputData.liveUrl);
       formData.append("projImage", fileRef.current.files[0]);
       formData.append("techSelect", JSON.stringify(techSelect));
-
       let data;
-      const projectId = window.location.pathname.split("/")[4];
+
+      const projectId = window.location.pathname.split("/")[4]; // get project id from url if edit mode
       if (isEdit) {
-        data = await api.updateProject(
+        data = await api.updateProjectById(
           projectId,
           formData,
           localStorage.getItem("token")
@@ -200,6 +205,7 @@ function CreateEditProject({ isEdit }) {
               ref={firstInputRef}
               required
               value={inputData.title}
+              className="input-element"
             />
           </div>
 
@@ -223,6 +229,7 @@ function CreateEditProject({ isEdit }) {
               onChange={handleChange}
               required
               value={inputData.githubUrl}
+              className="input-element"
             />
           </div>
 
@@ -234,6 +241,7 @@ function CreateEditProject({ isEdit }) {
               onChange={handleChange}
               required
               value={inputData.liveUrl}
+              className="input-element"
             />
           </div>
           <div className="input-container">
@@ -255,7 +263,7 @@ function CreateEditProject({ isEdit }) {
               <input
                 type="text"
                 placeholder="Search..."
-                className="search"
+                className="input-element"
                 onChange={handleChange}
                 name="techQuery"
                 ref={inputRef}

@@ -2,8 +2,9 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import MyProjects from "../modules/MyProjects";
 import MyBlog from "../modules/MyBlog";
-import CreateBlog from "../modules/CreateBlog";
+import CreateEditBlog from "../modules/CreateEditBlog";
 import CreateEditProject from "../modules/CreateEditProject";
+import API from "../modules/API";
 
 function MainContent() {
   return (
@@ -20,7 +21,18 @@ function MainContent() {
         />
 
         <Route path="/my-blog" element={<MyBlog />} />
-        <Route path="/my-blog/create" element={<CreateBlog />} />
+        <Route
+          path="/my-blog/create"
+          element={<CreateEditBlog isEdit={false} />}
+        />
+        <Route
+          path="/my-blog/edit/:id"
+          element={<CreateEditBlog isEdit={true} />}
+        />
+
+        <Route path="/API" element={<API />} />
+
+        <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </>
   );

@@ -24,13 +24,19 @@ function Sidebar({ userData }) {
             onClick={() => Navigate("/dashboard/my-projects")}
             className={path === "dashboard/my-projects" ? "selected" : null}
           >
-            My Projects
+            Projects
           </li>
           <li
             onClick={() => Navigate("/dashboard/my-blog")}
             className={path === "dashboard/my-blog" ? "selected" : null}
           >
-            My Blog
+            Blogs
+          </li>
+          <li
+            onClick={() => Navigate("/dashboard/API")}
+            className={path === "dashboard/API" ? "selected" : null}
+          >
+            My API
           </li>
         </ul>
         <ul>
@@ -38,13 +44,13 @@ function Sidebar({ userData }) {
             onClick={() => Navigate("/dashboard/my-projects/create")}
             className={path === "my-projects/create" ? "selected" : null}
           >
-            Add New Project
+            Add Project
           </li>
           <li
             onClick={() => Navigate("/dashboard/my-blog/create")}
             className={path === "my-blog/create" ? "selected" : null}
           >
-            Add New Blog Post
+            Add Blog Post
           </li>
         </ul>
       </div>

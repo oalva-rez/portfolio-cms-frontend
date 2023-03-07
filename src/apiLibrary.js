@@ -58,7 +58,7 @@ const getProjects = async (token) => {
     throw error;
   }
 };
-const getProject = async (id, token) => {
+const getProjectById = async (id, token) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/dashboard/my-projects/${id}`,
@@ -93,7 +93,7 @@ const createProject = async (formData, token) => {
     throw error;
   }
 };
-const updateProject = async (id, formData, token) => {
+const updateProjectById = async (id, formData, token) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/dashboard/my-projects/${id}`,
@@ -111,7 +111,7 @@ const updateProject = async (id, formData, token) => {
     throw error;
   }
 };
-const deleteProject = async (id, token) => {
+const deleteProjectById = async (id, token) => {
   try {
     const response = await fetch(
       `${API_BASE_URL}/api/dashboard/my-projects/${id}`,
@@ -128,13 +128,48 @@ const deleteProject = async (id, token) => {
     throw error;
   }
 };
+const createBlog = async (formData, token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/dashboard/my-blog/create`,
+      {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
+const getBlogs = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/dashboard/my-blog`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   login,
   register,
   verify,
   getProjects,
-  getProject,
+  getProjectById,
   createProject,
-  updateProject,
-  deleteProject,
+  updateProjectById,
+  deleteProjectById,
+  createBlog,
+  getBlogs,
 };

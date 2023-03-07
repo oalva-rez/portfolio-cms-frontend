@@ -31,7 +31,7 @@ function myProjects() {
         autoClose: false,
         isLoading: true,
       });
-      const data = await api.deleteProject(
+      const data = await api.deleteProjectById(
         projId,
         localStorage.getItem("token")
       );
@@ -64,7 +64,7 @@ function myProjects() {
         {projects.length == 0 ? (
           <div className="project-container">
             <h2>No projects found</h2>
-            <Link to="/dashboard/create-project">Add New Project</Link>
+            <Link to="/dashboard/my-projects/create">Add New Project</Link>
           </div>
         ) : (
           <div className="project-container">
