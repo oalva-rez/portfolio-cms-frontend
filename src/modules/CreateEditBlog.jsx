@@ -51,16 +51,14 @@ function CreateEditBlog({ isEdit }) {
     }
     //file input is not required for edit
     if (!isEdit && fileRef.current.files.length === 0) {
-      toast.error("Please select a project image");
+      toast.error("Please select a blog image");
       return false;
     }
     return true;
   }
   async function handleSubmit(e) {
     e.preventDefault();
-    const loadingToast = isEdit
-      ? "Updating Project..."
-      : "Adding New Project...";
+    const loadingToast = isEdit ? "Updating Blog..." : "Adding New Blog...";
 
     if (isInputValid()) {
       setIsLoading(true);
@@ -74,13 +72,13 @@ function CreateEditBlog({ isEdit }) {
       const formData = new FormData();
       formData.append("title", inputData.title);
       formData.append("body", getBodyHTML());
-      formData.append("featuredImage", fileRef.current.files[0]);
+      formData.append("blogImage", fileRef.current.files[0]);
       formData.append("metaTitle", inputData.metaTitle);
       formData.append("metaDescription", inputData.metaDescription);
       formData.append("metaKeywords", JSON.stringify(inputData.metaKeywords));
       let data;
 
-      const blogId = window.location.pathname.split("/")[4]; // get project id from url if edit mode
+      const blogId = window.location.pathname.split("/")[4]; // get blog id from url if edit mode
       if (isEdit) {
         // data = await api.updateProjectById(
         //   projectId,
@@ -91,11 +89,11 @@ function CreateEditBlog({ isEdit }) {
         data = await api.createBlog(formData, localStorage.getItem("token"));
       }
       const errorToast = isEdit
-        ? "Couldn't update project"
-        : "Couldn't create project";
+        ? "Couldn't update blog"
+        : "Couldn't create blog";
       const successToast = isEdit
-        ? "Project updated successfully!"
-        : "Project created successfully!";
+        ? "Blog updated successfully!"
+        : "Blog created successfully!";
       if (data.error) {
         // on error
         toast.update(id, {

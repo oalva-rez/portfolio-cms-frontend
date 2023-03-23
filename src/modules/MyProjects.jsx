@@ -67,11 +67,11 @@ function myProjects() {
             <Link to="/dashboard/my-projects/create">Add New Project</Link>
           </div>
         ) : (
-          <div className="project-container">
+          <div className="cards-container">
             {projects.map((proj) => {
               return (
                 <div
-                  className="project--card"
+                  className="card"
                   key={proj.projectId}
                   onMouseEnter={() =>
                     setIsHoverOnCard({ isHover: true, id: proj.projectId })
@@ -80,10 +80,10 @@ function myProjects() {
                     setIsHoverOnCard({ isHover: false, id: null })
                   }
                 >
-                  <div className="project--image">
+                  <div className="card--image">
                     <img src={proj.imageUrl} alt={proj.title + " screenshot"} />
                   </div>
-                  <div className="project--content">
+                  <div className="card--content">
                     <h2>{proj.title}</h2>
                     <p>{proj.description}</p>
                     <div className="project--tech">
@@ -115,8 +115,8 @@ function myProjects() {
                     className={
                       isHoverOnCard.isHover &&
                       isHoverOnCard.id === proj.projectId
-                        ? "project--menu"
-                        : "project--menu hide-menu"
+                        ? "card--menu"
+                        : "card--menu hide-menu"
                     }
                   >
                     <div
@@ -128,7 +128,7 @@ function myProjects() {
                     </div>
                     <span>|</span>
                     <div
-                      className="project--delete"
+                      className="card--delete"
                       onClick={() => {
                         handleProjectDelete(proj.projectId);
                       }}

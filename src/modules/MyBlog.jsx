@@ -15,16 +15,20 @@ function MyBlog() {
   return (
     <>
       <h1 className="module-header">My Blogs</h1>
-      <div className="module-content"></div>
-      {blogs.map((blog) => {
-        return (
-          <div key={blog.blogId}>
-            <h2>{blog.title}</h2>
-            <p>{blog.body}</p>
-            <img src={blog.featuredImage} alt="" />
-          </div>
-        );
-      })}
+      <div className="module-content">
+        {blogs.map((blog) => {
+          return (
+            <div key={blog.blogId}>
+              <img src={blog.imageUrl} alt={blog.title} />
+              <div>
+                <h1>
+                  <a href={`/blog/${blog.blogId}`}>{blog.title}</a>
+                </h1>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </>
   );
 }

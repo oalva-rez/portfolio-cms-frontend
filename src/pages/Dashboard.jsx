@@ -29,6 +29,7 @@ function Dashboard() {
         navigate("/login");
       } else {
         populateUserData();
+        navigate("/dashboard/my-projects");
       }
     } else {
       console.log("no token found");
