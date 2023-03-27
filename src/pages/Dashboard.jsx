@@ -14,10 +14,6 @@ function Dashboard() {
     setUserData(response.user);
   }
 
-  function signOut() {
-    localStorage.removeItem("token");
-    navigate("/login");
-  }
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -29,7 +25,7 @@ function Dashboard() {
         navigate("/login");
       } else {
         populateUserData();
-        navigate("/dashboard/my-projects");
+        // navigate("/dashboard/my-projects");
       }
     } else {
       console.log("no token found");

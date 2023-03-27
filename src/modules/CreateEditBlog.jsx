@@ -1,6 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Editor } from "@tinymce/tinymce-react";
 import { ToastContainer, toast } from "react-toastify";
+import { WithContext as ReactTags } from "react-tag-input";
+
 import api from "../apiLibrary";
 
 function CreateEditBlog({ isEdit }) {
@@ -9,17 +11,47 @@ function CreateEditBlog({ isEdit }) {
   const firstInputRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditBlogName, setIsEditBlogName] = useState("");
+  const [blogBody, setBlogBody] = useState("");
+  const [tags, setTags] = useState([]);
+
+  const keyCodes = {
+    comma: 188,
+    enter: 13,
+  };
+
+  const delimiters = [keyCodes.comma, keyCodes.enter];
+
+  const handleDelete = (i) => {
+    setTags(tags.filter((tag, index) => index !== i));
+  };
+
+  const handleAddition = (tag) => {
+    setTags([...tags, tag]);
+  };
+
+  const handleDrag = (tag, currPos, newPos) => {
+    const newTags = tags.slice();
+
+    newTags.splice(currPos, 1);
+    newTags.splice(newPos, 0, tag);
+
+    // re-render
+    setTags(newTags);
+  };
 
   const getBodyHTML = () => {
     if (editorRef.current) {
       return editorRef.current.getContent();
     }
   };
+  const clearEditor = () => {
+    editorRef.current.setContent("");
+  };
   const [inputData, setInputData] = useState({
     title: "",
     metaTitle: "",
     metaDescription: "",
-    metaKeywords: "",
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +77,7 @@ function CreateEditBlog({ isEdit }) {
       toast.error("Please enter a meta description");
       return false;
     }
-    if (inputData.metaKeywords === "") {
+    if (inputData.tags === "") {
       toast.error("Please enter meta keywords");
       return false;
     }
@@ -56,7 +88,7 @@ function CreateEditBlog({ isEdit }) {
     }
     return true;
   }
-  async function handleSubmit(e) {
+  async function handleSubmit(e, status) {
     e.preventDefault();
     const loadingToast = isEdit ? "Updating Blog..." : "Adding New Blog...";
 
@@ -75,16 +107,17 @@ function CreateEditBlog({ isEdit }) {
       formData.append("blogImage", fileRef.current.files[0]);
       formData.append("metaTitle", inputData.metaTitle);
       formData.append("metaDescription", inputData.metaDescription);
-      formData.append("metaKeywords", JSON.stringify(inputData.metaKeywords));
+      formData.append("metaKeywords", JSON.stringify(tags));
+      formData.append("status", status === "draft" ? "draft" : "published");
       let data;
 
       const blogId = window.location.pathname.split("/")[4]; // get blog id from url if edit mode
       if (isEdit) {
-        // data = await api.updateProjectById(
-        //   projectId,
-        //   formData,
-        //   localStorage.getItem("token")
-        // );
+        data = await api.updateBlogById(
+          blogId,
+          formData,
+          localStorage.getItem("token")
+        );
       } else {
         data = await api.createBlog(formData, localStorage.getItem("token"));
       }
@@ -111,22 +144,59 @@ function CreateEditBlog({ isEdit }) {
           autoClose: 2000,
         });
         setIsLoading(false);
-        !isEdit &&
+        if (!isEdit) {
+          clearEditor();
+          setTags([]);
           setInputData({
             title: "",
             metaTitle: "",
             metaDescription: "",
-            metaKeywords: "",
           });
+        }
+
         firstInputRef.current.focus();
       }
     }
   }
+  useEffect(() => {
+    // clear inputs on render
+    setInputData({
+      title: "",
+      metaTitle: "",
+      metaDescription: "",
+    });
+    setTags([]);
+
+    // focus on first input
+    firstInputRef.current.focus();
+    // get blog data if edit mode
+    if (isEdit) {
+      async function getBlog() {
+        const data = await api.getBlogById(
+          window.location.pathname.split("/")[4],
+          localStorage.getItem("token")
+        );
+        setInputData((prevInputData) => {
+          return {
+            title: data.blog.title,
+            metaTitle: data.blog.metaTitle,
+            metaDescription: data.blog.metaDescription,
+          };
+        });
+        setTags(JSON.parse(data.blog.metaKeywords));
+        setIsEditBlogName(data.blog.title);
+        setBlogBody(data.blog.body);
+      }
+      getBlog();
+    }
+  }, [isEdit]);
   return (
     <>
-      <h1 className="module-header">Create Blog</h1>
+      <h1 className="module-header">
+        {isEdit ? `Editing - ${isEditBlogName}` : "Create New Blog Post"}
+      </h1>
       <div className="module-content">
-        <form className="blog--form">
+        <form className="blog--form input-container">
           <h2>Content</h2>
           <label htmlFor="title">Title</label>
           <input
@@ -141,7 +211,7 @@ function CreateEditBlog({ isEdit }) {
           <Editor
             apiKey={import.meta.env.VITE_API_KEY}
             onInit={(evt, editor) => (editorRef.current = editor)}
-            initialValue="<p>This is the initial content of the editor.</p>"
+            initialValue={isEdit ? blogBody : ""}
             init={{
               height: 500,
               menubar: false,
@@ -197,22 +267,38 @@ function CreateEditBlog({ isEdit }) {
             value={inputData.metaDescription}
           />
           <label htmlFor="metaKeywords">Keywords</label>
-          <input
-            type="text"
-            name="metaKeywords"
-            className="input-element"
-            onChange={handleChange}
-            value={inputData.metaKeywords}
-          />
-          <button
-            type="submit"
-            onClick={(e) => {
-              e.preventDefault();
-              handleSubmit(e);
-            }}
-          >
-            Create New Blog
-          </button>
+          <div>
+            <ReactTags
+              tags={tags}
+              delimiters={delimiters}
+              handleDelete={handleDelete}
+              handleAddition={handleAddition}
+              handleDrag={handleDrag}
+              inputFieldPosition="bottom"
+            />
+          </div>
+          <div className="blog--buttons">
+            <button
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e, "draft");
+              }}
+              className="draft"
+            >
+              Save As Draft
+            </button>
+            <button
+              type="submit"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e, "publish");
+              }}
+              className="publish"
+            >
+              Publish
+            </button>
+          </div>
         </form>
       </div>
       <ToastContainer

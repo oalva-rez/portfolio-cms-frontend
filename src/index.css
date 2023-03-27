@@ -5,7 +5,9 @@
   padding: 0;
   font-family: "Roboto", sans-serif;
 }
-
+html {
+  overflow: hidden;
+}
 .main {
   display: grid;
   grid-template-columns: 0.4fr 3fr;
@@ -43,7 +45,16 @@
   color: #c3c3c3df;
   text-align: center;
 }
-
+.sidebar button {
+  background-color: #1d232700;
+  border: none;
+  color: #eaa4a4;
+  margin-top: 20px;
+  cursor: pointer;
+}
+.sidebar button:hover {
+  color: #eaa4a4c4;
+}
 .sidebar--content ul {
   list-style: none;
 }
@@ -92,6 +103,7 @@
   font-size: 1.3rem;
   font-weight: lighter;
 }
+
 .input-container {
   display: flex;
   margin-bottom: 20px;
@@ -200,7 +212,55 @@ textarea,
 .project-input-container button:hover {
   background-color: #2c2c2c;
 }
+/* CREATE BLOG */
+.blog--form input,
+textarea,
+.tox {
+  margin-bottom: 20px;
+}
+.tag-wrapper {
+  padding: 3px 10px;
+  background-color: #d9d9d9;
+  color: #777777;
+  font-size: 16px;
+  /* border: 1px solid #888888; */
+  margin-right: 7px;
+}
+.tag-wrapper button {
+  background-color: #61616100;
+  border: none;
+  font-size: 16px;
+  margin-left: 7px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.ReactTags__selected {
+  margin-bottom: 6px;
+}
+.blog--buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.blog--buttons button {
+  width: 40%;
+  min-height: 40px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: lighter;
+  cursor: pointer;
+  margin: 10px auto;
+  position: relative;
+}
 
+.draft {
+  background-color: #72aee6;
+  color: black;
+}
+.publish {
+  background-color: lightgreen;
+  color: black;
+}
 /* PROJECTS */
 .cards-container {
   display: grid;
@@ -240,10 +300,14 @@ textarea,
 .card--content {
   flex: 1;
 }
-.card--content h2 {
+
+.card--content h2,
+.card--content a {
   font-size: 24px;
   font-weight: 400;
   margin-bottom: 8px;
+  color: #1d2327;
+  text-decoration: none;
 }
 .card--content p {
   font-size: 18px;

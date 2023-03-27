@@ -4,6 +4,7 @@ import MyProjects from "../modules/MyProjects";
 import MyBlog from "../modules/MyBlog";
 import CreateEditBlog from "../modules/CreateEditBlog";
 import CreateEditProject from "../modules/CreateEditProject";
+import BlogPost from "../modules/BlogPost";
 import API from "../modules/API";
 
 function MainContent() {
@@ -12,7 +13,7 @@ function MainContent() {
       <Routes>
         <Route path="/my-projects" element={<MyProjects />} />
         <Route
-          path="my-projects/create"
+          path="/my-projects/create"
           element={<CreateEditProject isEdit={false} />}
         />
         <Route
@@ -25,6 +26,8 @@ function MainContent() {
           path="/my-blog/create"
           element={<CreateEditBlog isEdit={false} />}
         />
+        <Route path="/my-blog/:id" element={<BlogPost />} />
+
         <Route
           path="/my-blog/edit/:id"
           element={<CreateEditBlog isEdit={true} />}

@@ -146,6 +146,23 @@ const createBlog = async (formData, token) => {
     throw error;
   }
 };
+const getBlogById = async (id, token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/dashboard/my-blog/${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
 const getBlogs = async (token) => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/dashboard/my-blog`, {
@@ -160,7 +177,41 @@ const getBlogs = async (token) => {
     throw error;
   }
 };
-
+const updateBlogById = async (id, formData, token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/dashboard/my-blog/${id}`,
+      {
+        method: "PUT",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
+const deleteBlogById = async (id, token) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/dashboard/my-blog/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
 export default {
   login,
   register,
@@ -172,4 +223,7 @@ export default {
   deleteProjectById,
   createBlog,
   getBlogs,
+  getBlogById,
+  updateBlogById,
+  deleteBlogById,
 };

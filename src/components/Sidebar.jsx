@@ -3,9 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 function Sidebar({ userData }) {
   const { siteName } = userData;
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname.split("/").slice(-2).join("/");
+
+  function signOut() {
+    localStorage.removeItem("token");
+    navigate("/login");
+  }
 
   return (
     <>
@@ -18,22 +23,23 @@ function Sidebar({ userData }) {
               {siteName}
             </Link>
           </span>
+          <button onClick={signOut}>Sign Out</button>
         </h2>
         <ul>
           <li
-            onClick={() => Navigate("/dashboard/my-projects")}
+            onClick={() => navigate("/dashboard/my-projects")}
             className={path === "dashboard/my-projects" ? "selected" : null}
           >
             Projects
           </li>
           <li
-            onClick={() => Navigate("/dashboard/my-blog")}
+            onClick={() => navigate("/dashboard/my-blog")}
             className={path === "dashboard/my-blog" ? "selected" : null}
           >
             Blogs
           </li>
           <li
-            onClick={() => Navigate("/dashboard/API")}
+            onClick={() => navigate("/dashboard/API")}
             className={path === "dashboard/API" ? "selected" : null}
           >
             My API
@@ -41,13 +47,13 @@ function Sidebar({ userData }) {
         </ul>
         <ul>
           <li
-            onClick={() => Navigate("/dashboard/my-projects/create")}
+            onClick={() => navigate("/dashboard/my-projects/create")}
             className={path === "my-projects/create" ? "selected" : null}
           >
             Add Project
           </li>
           <li
-            onClick={() => Navigate("/dashboard/my-blog/create")}
+            onClick={() => navigate("/dashboard/my-blog/create")}
             className={path === "my-blog/create" ? "selected" : null}
           >
             Add Blog Post
