@@ -31,39 +31,58 @@ function BlogPost() {
     );
   };
 
-  SEOKeywords.forEach((word) => {
-    console.log(word.text);
-  });
-
   return isLoading ? (
     <Loading />
   ) : (
     <>
       <h1 className="module-header">{blog.title}</h1>
       <div className="module-content">
-        <button
-          onClick={() => {
-            setShowSEO((prev) => !prev);
-          }}
-        >
-          {showSEO ? "Hide" : "Show"} SEO Details
-        </button>
-        {showSEO ? (
-          <div className="post-seo">
-            <div className="seo-title">Title: {blog.metaTitle}</div>
-            <div className="seo-description">
-              Description: {blog.metaDescription}
+        <div className="blogpost-container">
+          <button
+            onClick={() => {
+              setShowSEO((prev) => !prev);
+            }}
+            className="seo-button"
+          >
+            {showSEO ? "Hide" : "Show"} SEO Details
+          </button>
+          {showSEO ? (
+            <div className="post-seo">
+              <h2>SEO Data</h2>
+              <div>
+                <div className="seo-title">
+                  <span className="seo-titles">Title:</span>{" "}
+                  <span className="seo-data">{blog.metaTitle}</span>
+                </div>
+                <div className="seo-description">
+                  <span className="seo-titles">Description:</span>{" "}
+                  <span className="seo-data">
+                    {blog.metaDescription ? blog.metaDescription : "N/A"}
+                  </span>
+                </div>
+                <div className="seo-keyword-container">
+                  <span className="seo-titles">Keywords:</span>{" "}
+                  {SEOKeywords.map((word) => {
+                    return (
+                      <span className="seo-keyword seo-data">{word.text}</span>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-            <div className="seo-keyword-container">
-              Keywords:{" "}
-              {SEOKeywords.map((word) => {
-                return <span className="seo-keyword">{word.text}</span>;
-              })}
-            </div>
+          ) : null}
+          <div className="blog-image-container">
+            <img
+              src={blog.imageUrl}
+              alt={blog.title}
+              className="blogpost--image"
+            />
           </div>
-        ) : null}
-        <img src={blog.imageUrl} alt={blog.title} />
-        <div dangerouslySetInnerHTML={{ __html: blog.body }} />
+          <div
+            className="blog-text"
+            dangerouslySetInnerHTML={{ __html: blog.body }}
+          />
+        </div>
       </div>
     </>
   );
