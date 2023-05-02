@@ -212,6 +212,21 @@ const deleteBlogById = async (id, token) => {
     throw error;
   }
 };
+const getApiKey = async (token) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/dashboard/api-key`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default {
   login,
   register,
@@ -226,4 +241,5 @@ export default {
   getBlogById,
   updateBlogById,
   deleteBlogById,
+  getApiKey,
 };

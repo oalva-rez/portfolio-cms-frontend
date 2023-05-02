@@ -418,3 +418,54 @@ textarea,
   line-height: 1.5;
   color: #1d2327;
 }
+/* API */
+
+.api-info {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  height: 50px;
+  font-size: 18px;
+}
+.api-info button {
+  height: 30px;
+  width: 100px;
+  margin-right: 30px;
+  border: none;
+  background-color: #3c3c3c8c;
+  color: white;
+  cursor: pointer;
+}
+.api-documentation p {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: #1d2327;
+}
+.api-documentation section {
+  margin-bottom: 30px;
+}
+.api-documentation h2 {
+  margin-top: 20px;
+}
+.api-documentation h3 {
+  margin-top: 20px;
+}
+.api-documentation h4 {
+  margin-top: 20px;
+  color: red;
+}
+.alert {
+  color: red;
+  font-size: 18px;
+  font-weight: 400;
+}
+.new-api-key {
+  margin: 20px 0;
+  height: 30px;
+  width: 150px;
+  border: 1px solid red;
+  background-color: lightcoral;
+  color: white;
+  cursor: pointer;
+}
