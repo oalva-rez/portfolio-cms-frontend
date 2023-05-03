@@ -9,6 +9,8 @@ function CreateEditProject({ isEdit }) {
     description: "",
     githubUrl: "",
     liveUrl: "",
+    featured: false,
+    wip: false,
     techQuery: "",
   });
   const [techSelect, setTechSelect] = useState([]);
@@ -22,15 +24,16 @@ function CreateEditProject({ isEdit }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isEditProjectName, setIsEditProjectName] = useState("");
   function handleChange(e) {
-    const { name, value } = e.target;
+    const { name, type, checked, value } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
     setInputData((prevInputData) => {
       return {
         ...prevInputData,
-        [name]: value,
+        [name]: newValue,
       };
     });
   }
-
   useEffect(() => {
     // clear inputs on render
     setInputData({
@@ -38,6 +41,8 @@ function CreateEditProject({ isEdit }) {
       description: "",
       githubUrl: "",
       liveUrl: "",
+      featured: false,
+      wip: false,
       techQuery: "",
     });
     setTechSelect([]);
@@ -52,12 +57,15 @@ function CreateEditProject({ isEdit }) {
           window.location.pathname.split("/")[4],
           localStorage.getItem("token")
         );
-        setInputData((prevInputData) => {
+        console.log(data.project);
+        setInputData(() => {
           return {
             title: data.project.title,
             description: data.project.description,
             githubUrl: data.project.githubUrl,
             liveUrl: data.project.liveUrl,
+            wip: data.project.wip,
+            featured: data.project.featured,
             techQuery: "",
           };
         });
@@ -136,6 +144,8 @@ function CreateEditProject({ isEdit }) {
       const formData = new FormData();
       formData.append("title", inputData.title);
       formData.append("description", inputData.description);
+      formData.append("featured", inputData.featured);
+      formData.append("wip", inputData.wip);
       formData.append("githubUrl", inputData.githubUrl);
       formData.append("liveUrl", inputData.liveUrl);
       formData.append("projImage", fileRef.current.files[0]);
@@ -180,6 +190,8 @@ function CreateEditProject({ isEdit }) {
             title: "",
             description: "",
             githubUrl: "",
+            featured: false,
+            wip: false,
             liveUrl: "",
             techQuery: "",
           });
@@ -242,6 +254,26 @@ function CreateEditProject({ isEdit }) {
               required
               value={inputData.liveUrl}
               className="input-element"
+            />
+          </div>
+          <div className="input-container">
+            <label htmlFor="is-featured">Featured Project:</label>
+            <input
+              type="checkbox"
+              name="featured"
+              className="input-checkbox"
+              onChange={handleChange}
+              checked={inputData.featured}
+            />
+          </div>
+          <div className="input-container">
+            <label htmlFor="is-featured">Work In Progress:</label>
+            <input
+              type="checkbox"
+              name="wip"
+              className="input-checkbox"
+              onChange={handleChange}
+              checked={inputData.wip}
             />
           </div>
           <div className="input-container">
@@ -332,6 +364,7 @@ function CreateEditProject({ isEdit }) {
               })}
             </div>
           </div>
+
           <button
             onClick={handleSubmit}
             disabled={isLoading ? true : false}
