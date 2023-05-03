@@ -19,9 +19,9 @@ function Sidebar({ userData }) {
         <h2>
           Site Domain:{" "}
           <span className="domain">
-            <Link to={`/${siteName}`} target="_blank" rel="noopener noreferrer">
+            <a href={`https://${siteName}`} target="_blank">
               {siteName}
-            </Link>
+            </a>
           </span>
           <button onClick={signOut}>Sign Out</button>
         </h2>
