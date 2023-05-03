@@ -62,64 +62,74 @@ function MyBlog() {
     const options = { month: "long", day: "numeric", year: "numeric" };
     return date.toLocaleDateString(undefined, options);
   }
+  console.log("blogs", blogs);
   return (
     <>
       <h1 className="module-header">My Blogs</h1>
       <div className="module-content">
-        {blogs.map((blog) => {
-          return (
-            <div
-              key={blog.blogId}
-              className="card"
-              onMouseEnter={() =>
-                setIsHoverOnCard({ isHover: true, id: blog.blogId })
-              }
-              onMouseLeave={() =>
-                setIsHoverOnCard({ isHover: false, id: null })
-              }
-            >
-              <div className="card--image">
-                <img src={blog.imageUrl} alt={blog.title} />
-              </div>
-              <div className="card--content">
-                <h2>
-                  <a href={`my-blog/${blog.blogId}`}>{blog.title}</a>
-                </h2>
-                <p>{blog.metaDescription}</p>
-                <p>Created At: {toLocalDateTime(blog.createdAt)}</p>
-                <p>Updated At: {toLocalDateTime(blog.updatedAt)}</p>
-                <p>
-                  Status: {blog.status[0].toUpperCase() + blog.status.slice(1)}
-                </p>
-              </div>
+        {blogs.length > 0 ? (
+          blogs.map((blog) => {
+            return (
               <div
-                className={
-                  isHoverOnCard.isHover && isHoverOnCard.id === blog.blogId
-                    ? "card--menu"
-                    : "card--menu hide-menu"
+                key={blog.blogId}
+                className="card"
+                onMouseEnter={() =>
+                  setIsHoverOnCard({ isHover: true, id: blog.blogId })
+                }
+                onMouseLeave={() =>
+                  setIsHoverOnCard({ isHover: false, id: null })
                 }
               >
-                <div
-                  onClick={() => {
-                    handleBlogEdit(blog.blogId);
-                  }}
-                >
-                  Edit
+                <div className="card--image">
+                  <img src={blog.imageUrl} alt={blog.title} />
                 </div>
-                <span>|</span>
+                <div className="card--content">
+                  <h2>
+                    <a href={`my-blog/${blog.blogId}`}>{blog.title}</a>
+                  </h2>
+                  <p>{blog.metaDescription}</p>
+                  <p>Created At: {toLocalDateTime(blog.createdAt)}</p>
+                  <p>Updated At: {toLocalDateTime(blog.updatedAt)}</p>
+                  <p>
+                    Status:{" "}
+                    {blog.status[0].toUpperCase() + blog.status.slice(1)}
+                  </p>
+                </div>
                 <div
-                  onClick={() => {
-                    handleBlogDelete(blog.blogId);
-                  }}
-                  className="card--delete"
+                  className={
+                    isHoverOnCard.isHover && isHoverOnCard.id === blog.blogId
+                      ? "card--menu"
+                      : "card--menu hide-menu"
+                  }
                 >
-                  Delete
+                  <div
+                    onClick={() => {
+                      handleBlogEdit(blog.blogId);
+                    }}
+                  >
+                    Edit
+                  </div>
+                  <span>|</span>
+                  <div
+                    onClick={() => {
+                      handleBlogDelete(blog.blogId);
+                    }}
+                    className="card--delete"
+                  >
+                    Delete
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <div className="no-blogs">
+            <h2>No blogs found.</h2>
+            <Link to="/dashboard/my-blog/create">Create a new blog</Link>
+          </div>
+        )}
       </div>
+
       <ToastContainer
         position="top-right"
         hideProgressBar={true}
