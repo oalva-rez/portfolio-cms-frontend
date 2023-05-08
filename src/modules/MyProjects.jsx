@@ -87,7 +87,7 @@ function myProjects() {
                     <h2>{proj.title}</h2>
                     <p>{proj.description}</p>
                     <div className="project--tech">
-                      {JSON.parse(proj.techSelect).map((tech, index) => {
+                      {/* {JSON.parse(proj.techSelect).map((tech, index) => {
                         const iconUrl = techIcons.find(
                           (icon) => icon.tech_name === tech.tech_name
                         ).file_name;
@@ -98,7 +98,7 @@ function myProjects() {
                             key={index + tech.tech_name}
                           />
                         );
-                      })}
+                      })} */}
                       <div className="project--links">
                         <div className="project--gh">
                           <i className="fa-brands fa-github"></i>

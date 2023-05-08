@@ -69,7 +69,7 @@ function CreateEditProject({ isEdit }) {
             techQuery: "",
           };
         });
-        setTechSelect(JSON.parse(data.project.techSelect));
+        setTechSelect(data.project.techSelect);
         setIsEditProjectName(data.project.title);
       }
       getProject();
@@ -281,7 +281,7 @@ function CreateEditProject({ isEdit }) {
             <input
               type="file"
               name="imageFile"
-              accept="image/png, image/jpeg, image/jpg image/webp"
+              accept="image/png, image/jpeg, image/jpg, image/webp"
               ref={fileRef}
               required
             />

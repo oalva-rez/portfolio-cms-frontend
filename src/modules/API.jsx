@@ -28,7 +28,7 @@ function API() {
 
   function getCodeString(path) {
     return `
-    fetch('https://api.yourcompany.com/api/users/${path}', {
+    fetch('https://custom-cms.onrender.com/api/users/${path}', {
         headers: {
             'x-api-key': '[your API key]'
         }
