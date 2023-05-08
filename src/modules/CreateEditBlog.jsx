@@ -19,7 +19,6 @@ function CreateEditBlog({ isEdit }) {
     comma: 188,
     enter: 13,
   };
-
   const delimiters = [keyCodes.comma, keyCodes.enter];
 
   const handleDelete = (i) => {
@@ -176,14 +175,14 @@ function CreateEditBlog({ isEdit }) {
           window.location.pathname.split("/")[4],
           localStorage.getItem("token")
         );
-        setInputData((prevInputData) => {
+        setInputData(() => {
           return {
             title: data.blog.title,
             metaTitle: data.blog.metaTitle,
             metaDescription: data.blog.metaDescription,
           };
         });
-        setTags(JSON.parse(data.blog.metaKeywords));
+        setTags(data.blog.metaKeywords);
         setIsEditBlogName(data.blog.title);
         setBlogBody(data.blog.body);
       }

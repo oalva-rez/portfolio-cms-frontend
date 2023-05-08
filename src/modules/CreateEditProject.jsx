@@ -57,7 +57,6 @@ function CreateEditProject({ isEdit }) {
           window.location.pathname.split("/")[4],
           localStorage.getItem("token")
         );
-        console.log(data.project);
         setInputData(() => {
           return {
             title: data.project.title,

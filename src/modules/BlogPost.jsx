@@ -15,7 +15,8 @@ function BlogPost() {
           localStorage.getItem("token")
         );
         setBlog(data.blog);
-        setSEOKeywords(JSON.parse(data.blog.metaKeywords));
+        setSEOKeywords(data.blog.metaKeywords);
+        console.log(data.blog);
         setIsLoading(false);
       }
       getBlog();
@@ -62,9 +63,11 @@ function BlogPost() {
                 </div>
                 <div className="seo-keyword-container">
                   <span className="seo-titles">Keywords:</span>{" "}
-                  {SEOKeywords.map((word) => {
+                  {SEOKeywords.map((word, index) => {
                     return (
-                      <span className="seo-keyword seo-data">{word.text}</span>
+                      <span className="seo-keyword seo-data" key={word + index}>
+                        {word.text}
+                      </span>
                     );
                   })}
                 </div>

@@ -17,7 +17,6 @@ function MyBlog() {
     async function getBlogs() {
       const data = await api.getBlogs(localStorage.getItem("token"));
       setBlogs(data.blogs);
-      console.log(data.blogs);
     }
     getBlogs();
   }, []);
@@ -62,7 +61,6 @@ function MyBlog() {
     const options = { month: "long", day: "numeric", year: "numeric" };
     return date.toLocaleDateString(undefined, options);
   }
-  console.log("blogs", blogs);
   return (
     <>
       <h1 className="module-header">My Blogs</h1>
@@ -85,7 +83,7 @@ function MyBlog() {
                 </div>
                 <div className="card--content">
                   <h2>
-                    <a href={`my-blog/${blog.blogId}`}>{blog.title}</a>
+                    <Link to={`${blog.blogId}`}>{blog.title}</Link>
                   </h2>
                   <p>{blog.metaDescription}</p>
                   <p>Created At: {toLocalDateTime(blog.createdAt)}</p>
