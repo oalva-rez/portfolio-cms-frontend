@@ -90,7 +90,13 @@ function MyBlog() {
                   <p>Updated At: {toLocalDateTime(blog.updatedAt)}</p>
                   <p>
                     Status:{" "}
-                    {blog.status[0].toUpperCase() + blog.status.slice(1)}
+                    <span
+                      style={{
+                        color: blog.status === "published" ? "green" : "red",
+                      }}
+                    >
+                      {blog.status[0].toUpperCase() + blog.status.slice(1)}
+                    </span>
                   </p>
                 </div>
                 <div
