@@ -2,8 +2,6 @@
 
 # Headless Portfolio CMS
 
-Welcome to the documentation for our headless portfolio CMS!
-
 Our CMS is designed to help you manage your portfolio website easily and efficiently. With our CMS, you can update your projects and blog posts directly from the platform without needing to go through the hassle of coding and deploying changes manually. Here's a brief overview of the features of our CMS:
 
 - **Headless architecture:** Our CMS is designed to be headless, which means that it separates the front-end presentation layer from the back-end content management layer. This allows you to use any front-end technology you want to build your website, while still being able to manage your content through our CMS.
