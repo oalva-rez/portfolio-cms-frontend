@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -11,8 +12,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" exact element={<Dashboard />} />
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/register" exact element={<Register />} />
+        <Route path="/auth" exact element={<Auth />} />
         <Route path="/dashboard/*" exact element={<Dashboard />} />
       </Routes>
     </BrowserRouter>

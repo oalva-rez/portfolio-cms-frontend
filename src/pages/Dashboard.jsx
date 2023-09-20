@@ -11,6 +11,7 @@ function Dashboard() {
 
   async function populateUserData() {
     const response = await api.verify(localStorage.getItem("token"));
+    console.log(response);
     setUserData(response.user);
   }
 

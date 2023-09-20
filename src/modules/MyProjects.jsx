@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import api from "../apiLibrary";
 
 function myProjects() {
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState([{}]);
   const [isHoverOnCard, setIsHoverOnCard] = useState({
     isHover: false,
     id: null,
@@ -14,6 +14,7 @@ function myProjects() {
   useEffect(() => {
     async function getProjects() {
       const data = await api.getProjects(localStorage.getItem("token"));
+      console.log(data);
       setProjects(data.projects);
     }
     getProjects();
@@ -61,14 +62,14 @@ function myProjects() {
     <>
       <h1 className="module-header">My Projects</h1>
       <div className="module-content">
-        {projects.length == 0 ? (
+        {projects?.length == 0 ? (
           <div className="project-container">
             <h2>No projects found</h2>
             <Link to="/dashboard/my-projects/create">Add New Project</Link>
           </div>
         ) : (
           <div className="cards-container">
-            {projects.map((proj) => {
+            {projects?.map((proj) => {
               return (
                 <div
                   className="card"
@@ -87,7 +88,7 @@ function myProjects() {
                     <h2>{proj.title}</h2>
                     <p>{proj.description}</p>
                     <div className="project--tech">
-                      {/* {JSON.parse(proj.techSelect).map((tech, index) => {
+                      {/* {proj.techSelect).map((tech, index) => {
                         const iconUrl = techIcons.find(
                           (icon) => icon.tech_name === tech.tech_name
                         ).file_name;
@@ -98,7 +99,7 @@ function myProjects() {
                             key={index + tech.tech_name}
                           />
                         );
-                      })} */}
+                      }} */}
                       <div className="project--links">
                         <div className="project--gh">
                           <i className="fa-brands fa-github"></i>

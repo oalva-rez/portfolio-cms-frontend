@@ -31,7 +31,8 @@ function Register() {
       if (inputData.password === inputData.confirmPassword) {
         try {
           const data = await api.register(inputData);
-          if (!data.error) {
+          console.log(data);
+          if (!data.status === "success") {
             navigate("/login");
           }
         } catch (error) {
