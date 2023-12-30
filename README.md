@@ -13,7 +13,7 @@ Welcome to the repository for my headless CMS frontend application. This React.j
 
 * **React.js Frontend:** Utilizes React.js for a dynamic and interactive user interface. The frontend is designed to provide a seamless user experience, facilitating easy navigation and content management.
 
-* **Node.js Backend Integration:** The application's backend is powered by Node.js, ensuring smooth data processing and API management. This integration forms the backbone of the application's functionality.
+* **Node.js Backend Integration:** The application's backend is powered by a [Node.js application](https://github.com/oalva-rez/portfolio-cms-api), ensuring smooth data processing and API management. This integration forms the backbone of the application's functionality.
 
 * **User Authentication:** Implements a secure authentication system where users can sign up and log in using their email and password. This feature ensures that access to the CMS is restricted to authorized users only, safeguarding user data and content integrity.
 
