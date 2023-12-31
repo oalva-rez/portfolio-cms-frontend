@@ -50,7 +50,7 @@ Users can toggle between draft and published status, fine-tuning their posts for
   <img src="./img/cms-4.webp" alt="edit blogpost" width="938">
 </p>
 
-### Dark Mode
+### User API documentation
 This section not only guides on effective API utilization but also provides the functionality to generate new API keys, ensuring secure and tailored access to user-specific data.
 <p align="center">
   <img src="./img/cms-5.webp" alt="mobile version" width="938">
